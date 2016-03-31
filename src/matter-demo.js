@@ -50,6 +50,12 @@ bumpkit.loadBuffer('/samples/snare.wav', function(buffer) {
                 })
 
 
+var muteButton = document.getElementById('mute-button');
+muteButton.addEventListener('click', function() {
+  mixer.tracks.forEach(function(track) {
+    track.toggleMute();
+  })
+})
 
 
     // add all of the bodies to the world
