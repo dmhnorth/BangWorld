@@ -14,6 +14,20 @@ function startBoxDemo() {
     // create a Matter.js engine
     var engine = Engine.create(document.getElementById('the-world-div'));
 
+    // create a bumpkit
+    var bumpkit = new Bumpkit();
+
+    // create a bumpkit mixer with two tracks
+    var mixer = bumpkit.createMixer().addTrack().addTrack();
+    //create a new sampler instrument, connect to track one and load an audio buffer
+var sampler = bumpkit.createSampler().connect(mixer.tracks[0]);
+
+bumpkit.loadBuffer('/samples/snare.wav', function(buffer) {
+  sampler.buffer(buffer);
+});
+
+
+
     // create two boxes and a ground
     var boxA = Bodies.rectangle(400, 200, 80, 80);
     var boxB = Bodies.rectangle(450, 50, 80, 80);
@@ -23,6 +37,8 @@ function startBoxDemo() {
     // an example of using collisionStart event on an engine, a custom Matter-js listener, with its own implementation of 'on' and 'trigger' from Matter's library
                 Events.on(engine, 'collisionStart', function(event) {
                   console.log('there was a collision');
+                  sampler.play();
+
                     var pairs = event.pairs;
 
                     // change object colours to show those starting a collision

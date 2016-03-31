@@ -9,6 +9,7 @@
   "author": "David North",
   "license": "ISC",
   "dependencies": {
+    "bumpkit": "0.0.2",
     "matter-js": "^0.9.1"
   }
 }
