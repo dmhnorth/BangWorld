@@ -1,4 +1,6 @@
-
+var KEYS = {
+  'n': 110
+}
 
 // lower case function names
 function startBoxDemo() {
@@ -26,7 +28,7 @@ function startBoxDemo() {
                     // change object colours to show those starting a collision
                     for (var i = 0; i < pairs.length; i++) {
                         var pair = pairs[i];
-                        pair.bodyA.render.fillStyle = '#bbbbbb';
+                        pair.bodyA.render.fillStyle = '#298217';
                         pair.bodyB.render.fillStyle = '#bbbbbb';
                     }
                 })
@@ -36,6 +38,15 @@ function startBoxDemo() {
 
     // add all of the bodies to the world
     World.add(engine.world, [boxA, boxB, ground]);
+
+// http://www.cambiaresearch.com/articles/15/javascript-key-codes
+    document.onkeypress = function(keys) {
+      console.log(keys.keyCode);
+      if (keys.keyCode === KEYS['n']) {
+        var newBox = Bodies.rectangle(500, 50, 80, 80);
+        World.add(engine.world, [newBox]);
+      }
+    }
 
     //
     var renderOptions = engine.render.options;
