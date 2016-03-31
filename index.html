@@ -1,0 +1,31 @@
+<!DOCTYPE HTML>
+
+<html>
+<head>
+<meta charset="UTF-8">
+<title>BangWorld</title>
+<!--imports go in head, explicit script closes. loaded from init, in order -->
+<script type="text/javascript" src="/node_modules/matter-js/build/matter.js"></script>
+<script type="text/javascript" src="/src/matter-demo.js"></script>
+</head>
+
+<!--imports and then html body and then JS is the convention -->
+<body>
+  <div id="canvas-container"></div>
+
+<!--this is where the js sits-->
+<script>
+// checks if DOM is loaded
+function ready(fn) {
+  if (document.readyState != 'loading'){
+    fn();
+  } else {
+    document.addEventListener('DOMContentLoaded', fn);
+  }
+}
+
+ready(MatterDemo.start);
+</script>
+
+</body>
+</html>
