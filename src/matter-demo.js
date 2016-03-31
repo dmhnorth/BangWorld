@@ -31,7 +31,9 @@ bumpkit.loadBuffer('/samples/snare.wav', function(buffer) {
     // create two boxes and a ground
     var boxA = Bodies.rectangle(400, 200, 80, 80);
     var boxB = Bodies.rectangle(450, 50, 80, 80);
-    var ground = Bodies.rectangle(400, 610, 810, 60, { isStatic: true });
+    var ground = Bodies.rectangle(400, 605, 810, 10, { isStatic: true });
+    var wallLeft = Bodies.rectangle(0, 300, 1, 600, { isStatic: true });
+    var wallRight = Bodies.rectangle(800, 300, 1, 600, { isStatic: true });
 
 
     // an example of using collisionStart event on an engine, a custom Matter-js listener, with its own implementation of 'on' and 'trigger' from Matter's library
@@ -59,7 +61,7 @@ muteButton.addEventListener('click', function() {
 
 
     // add all of the bodies to the world
-    World.add(engine.world, [boxA, boxB, ground]);
+    World.add(engine.world, [boxA, boxB, ground, wallLeft, wallRight]);
 
 // http://www.cambiaresearch.com/articles/15/javascript-key-codes
     document.onkeypress = function(keys) {
