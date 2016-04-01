@@ -3,14 +3,15 @@ var KEYS = {
   'space' : 32,
   'r' : 114,
   ',' : 44,
-  '.' : 46
+  '.' : 46,
+  'R' : 82
 }
 
 var POSITIONING = {
   'ph-x-start' : 0,
   'ph-y-start' : 300,
   'world-width' : 800,
-  'playhead-speed' : 1
+  'playhead-speed' : 5
 }
 
 var SIZES = {
@@ -26,6 +27,15 @@ var SAMPLES = {
   'ch':'/samples/808-HatC.wav',
   'oh':'/samples/808-HatOp.wav'
 }
+
+//collsion categories
+  var defaultCategory = 0x0001,
+      playheadCategory = 0x0002;
+
+//Playhead variables
+  var playing = false;
+  var counter = 0;
+
 
 // lower case function names
 function startBoxDemo() {
@@ -68,7 +78,7 @@ function startBoxDemo() {
     samplers[3].buffer(buffer);
   });
 
-  // create two boxes and a ground
+  // create two boxes, a circle, walls and a ground
   var boxA = Bodies.rectangle(400, 200, SIZES['medium-box'], SIZES['medium-box']);
   boxA.sampler = samplers[0];
   var boxB = Bodies.rectangle(450, 50, SIZES['medium-box'], SIZES['medium-box']);
@@ -79,9 +89,9 @@ function startBoxDemo() {
   var wallLeft = Bodies.rectangle(0, 300, 1, 600, { isStatic: true });
   var wallRight = Bodies.rectangle(800, 300, 1, 600, { isStatic: true });
 
+// create the playhead
+  var playhead = Bodies.rectangle(POSITIONING['ph-x-start'], POSITIONING['ph-y-start'], 1, SIZES['world-height'], { isStatic: true, collisionFilter: {mask: playheadCategory}});
 
-  var timestamp = engine.timing.timestamp;
-  var playhead = Bodies.rectangle(POSITIONING['ph-x-start'], POSITIONING['ph-y-start'], 1, SIZES['world-height'], { isStatic: true });
 
 
   // an example of using collisionStart event on an engine, a custom Matter-js listener, with its own implementation of 'on' and 'trigger' from Matter's library
@@ -137,11 +147,13 @@ function startBoxDemo() {
     if (keys.keyCode === KEYS['.']) {
       increasePlayheadSpeed()
     }
+    if (keys.keyCode === KEYS['R']) {
+      invertPlayheadSpeed()
+    }
   }
 
-  var playing = false;
-  var counter = 0;
 
+  //playhead timer
   Events.on(engine, 'beforeUpdate', function(event) {
     if(playing){
       if(counter >= POSITIONING['world-width']){
@@ -155,15 +167,13 @@ function startBoxDemo() {
     }
   })
 
-
-
+//playhead controls
   function startPlayhead() {
     playing = true;
   }
   function stopPlayhead() {
     playing = false;
   }
-
   function resetPlayhead() {
     Body.setPosition(playhead, { x:  POSITIONING['ph-x-start'], y:POSITIONING['ph-y-start'] });
     Body.setAngle(playhead, 0);
@@ -177,6 +187,9 @@ function startBoxDemo() {
   }
   function decreasePlayheadSpeed() {
     POSITIONING['playhead-speed'] = POSITIONING['playhead-speed'] - 1;
+  }
+  function invertPlayheadSpeed() {
+    POSITIONING['playhead-speed'] = POSITIONING['playhead-speed'] - POSITIONING['playhead-speed'] * 2;
   }
 
 
