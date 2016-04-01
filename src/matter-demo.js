@@ -128,10 +128,9 @@ function startBoxDemo() {
       }
     }
     if (keys.keyCode === KEYS['r']) {
-      Body.setPosition(playhead, { x:  POSITIONING['ph-x-start'], y:POSITIONING['ph-y-start'] });
-      Body.setAngle(playhead, 0);
-      Body.setVelocity(playhead, { x:  0, y:0 });
-      Body.setAngularVelocity(playhead, 0);
+
+      resetPlayhead();
+
     }
 
   }
@@ -139,24 +138,32 @@ function startBoxDemo() {
   var playing = false;
   var counter = 0;
 
-
-  function startPlayhead() {
-    playing = true;
-    Events.on(engine, 'beforeUpdate', function(event) {
+  Events.on(engine, 'beforeUpdate', function(event) {
+    if(playing){
       if(counter === POSITIONING['world-width']){
         counter = 0;
       }
       counter += POSITIONING['playhead-speed'];
       Body.setPosition(playhead, { x: counter, y:POSITIONING['ph-y-start'] });
-    })
+    }
+  })
 
+
+
+  function startPlayhead() {
+    playing = true;
   }
-
   function stopPlayhead() {
     playing = false;
-    Events.on(engine, 'beforeUpdate', function(event) {
-      //do nothing
-    })
+  }
+
+  function resetPlayhead() {
+    Body.setPosition(playhead, { x:  POSITIONING['ph-x-start'], y:POSITIONING['ph-y-start'] });
+    Body.setAngle(playhead, 0);
+    Body.setVelocity(playhead, { x:  0, y:0 });
+    Body.setAngularVelocity(playhead, 0);
+    playing = false;
+    counter = 0;
   }
 
   //
