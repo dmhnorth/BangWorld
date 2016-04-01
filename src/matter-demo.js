@@ -2,6 +2,12 @@ var KEYS = {
   'n': 110
 }
 
+var SIZES = {
+  'medium-box' : 80,
+  'sequencer-length' : 960,
+  'world-height' : 600
+}
+
 // lower case function names
 function startBoxDemo() {
 
@@ -9,10 +15,16 @@ function startBoxDemo() {
   var Engine = Matter.Engine,
       World = Matter.World,
       Bodies = Matter.Bodies,
-      Events = Matter.Events;
+      Events = Matter.Events,
+      Bounds = Matter.Bounds,
+      MouseConstraint = Matter.MouseConstraint;
 
     // create a Matter.js engine
     var engine = Engine.create(document.getElementById('the-world-div'));
+
+    // edit the world
+    //engine.world.bounds.max.x = SIZES['sequencer-length'];
+    //engine.world.bounds.max.y = 800;
 
     // create a bumpkit
     var bumpkit = new Bumpkit();
@@ -29,11 +41,12 @@ bumpkit.loadBuffer('/samples/snare.wav', function(buffer) {
 
 
     // create two boxes and a ground
-    var boxA = Bodies.rectangle(400, 200, 80, 80);
-    var boxB = Bodies.rectangle(450, 50, 80, 80);
+    var boxA = Bodies.rectangle(400, 200, SIZES['medium-box'], SIZES['medium-box']);
+    var boxB = Bodies.rectangle(450, 50, SIZES['medium-box'], SIZES['medium-box']);
     var ground = Bodies.rectangle(400, 605, 810, 10, { isStatic: true });
     var wallLeft = Bodies.rectangle(0, 300, 1, 600, { isStatic: true });
     var wallRight = Bodies.rectangle(800, 300, 1, 600, { isStatic: true });
+    var playhead = Bodies.rectangle(10, 0, 1, SIZES['world-height']);
 
 
     // an example of using collisionStart event on an engine, a custom Matter-js listener, with its own implementation of 'on' and 'trigger' from Matter's library
@@ -46,8 +59,8 @@ bumpkit.loadBuffer('/samples/snare.wav', function(buffer) {
                     // change object colours to show those starting a collision
                     for (var i = 0; i < pairs.length; i++) {
                         var pair = pairs[i];
-                        pair.bodyA.render.fillStyle = '#298217';
-                        pair.bodyB.render.fillStyle = '#bbbbbb';
+                        pair.bodyA.render.fillStyle = '#009900';
+                        pair.bodyB.render.fillStyle = '#990000';
                     }
                 })
 
@@ -61,13 +74,14 @@ muteButton.addEventListener('click', function() {
 
 
     // add all of the bodies to the world
-    World.add(engine.world, [boxA, boxB, ground, wallLeft, wallRight]);
+
+    World.add(engine.world, [boxA, boxB, ground, wallLeft, wallRight, playhead]);
 
 // http://www.cambiaresearch.com/articles/15/javascript-key-codes
     document.onkeypress = function(keys) {
       console.log(keys.keyCode);
       if (keys.keyCode === KEYS['n']) {
-        var newBox = Bodies.rectangle(500, 50, 80, 80);
+        var newBox = Bodies.rectangle(0, 50, 80, 80);
         World.add(engine.world, [newBox]);
       }
     }
@@ -76,8 +90,11 @@ muteButton.addEventListener('click', function() {
     var renderOptions = engine.render.options;
     renderOptions.wireframes = false;
 
+
+
     // run the engine
     Engine.run(engine);
+    World.add(engine.world, MouseConstraint.create(engine));
 }
 
 MatterDemo = {start:startBoxDemo}
