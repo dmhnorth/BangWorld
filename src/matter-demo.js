@@ -1,14 +1,16 @@
 var KEYS = {
   'n': 110,
   'space' : 32,
-  'r' : 114
+  'r' : 114,
+  ',' : 44,
+  '.' : 46
 }
 
 var POSITIONING = {
   'ph-x-start' : 0,
   'ph-y-start' : 300,
   'world-width' : 800,
-  'playhead-speed' : 2
+  'playhead-speed' : 1
 }
 
 var SIZES = {
@@ -109,7 +111,6 @@ function startBoxDemo() {
 
 
   // add all of the bodies to the world
-
   World.add(engine.world, [boxA, boxB, ground, wallLeft, wallRight, circleA, playhead]);
 
   // http://www.cambiaresearch.com/articles/15/javascript-key-codes
@@ -128,11 +129,14 @@ function startBoxDemo() {
       }
     }
     if (keys.keyCode === KEYS['r']) {
-
       resetPlayhead();
-
     }
-
+    if (keys.keyCode === KEYS[',']) {
+      decreasePlayheadSpeed()
+    }
+    if (keys.keyCode === KEYS['.']) {
+      increasePlayheadSpeed()
+    }
   }
 
   var playing = false;
@@ -140,8 +144,11 @@ function startBoxDemo() {
 
   Events.on(engine, 'beforeUpdate', function(event) {
     if(playing){
-      if(counter === POSITIONING['world-width']){
+      if(counter >= POSITIONING['world-width']){
         counter = 0;
+      }
+      if(counter < 0){
+        counter = POSITIONING['world-width'];
       }
       counter += POSITIONING['playhead-speed'];
       Body.setPosition(playhead, { x: counter, y:POSITIONING['ph-y-start'] });
@@ -165,14 +172,18 @@ function startBoxDemo() {
     playing = false;
     counter = 0;
   }
+  function increasePlayheadSpeed() {
+    POSITIONING['playhead-speed'] = POSITIONING['playhead-speed'] + 1;
+  }
+  function decreasePlayheadSpeed() {
+    POSITIONING['playhead-speed'] = POSITIONING['playhead-speed'] - 1;
+  }
 
-  //
+
+
+  // set environment variables and run the engine
   var renderOptions = engine.render.options;
   renderOptions.wireframes = false;
-
-
-
-  // run the engine
   Engine.run(engine);
   World.add(engine.world, MouseConstraint.create(engine));
 }
