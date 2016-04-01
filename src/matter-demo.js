@@ -4,13 +4,18 @@ var KEYS = {
   'r' : 114,
   ',' : 44,
   '.' : 46,
-  'R' : 82
+  'R' : 82,
+  '1' : 49,
+  '2' : 50,
+  '3' : 51,
+  '4' : 52
 }
 
 var POSITIONING = {
   'ph-x-start' : 0,
   'ph-y-start' : 300,
   'world-width' : 800,
+  'world-height' : 600,
   'playhead-speed' : 5
 }
 
@@ -59,6 +64,7 @@ function startBoxDemo() {
   //create some samplers, connect to track one and load an audio buffer
   var samplers = [bumpkit.createSampler(), bumpkit.createSampler(), bumpkit.createSampler(), bumpkit.createSampler()];
   for (var i = 0; i < samplers.length; i++) {
+    //this will probably need to be more intelligent
     samplers[i].connect(mixer.tracks[0]);
   }
 
@@ -78,19 +84,15 @@ function startBoxDemo() {
     samplers[3].buffer(buffer);
   });
 
-  // create two boxes, a circle, walls and a ground
-  var boxA = Bodies.rectangle(400, 200, SIZES['medium-box'], SIZES['medium-box']);
-  boxA.sampler = samplers[0];
-  var boxB = Bodies.rectangle(450, 50, SIZES['medium-box'], SIZES['medium-box']);
-  boxB.sampler = samplers[1];
-  var circleA = Bodies.circle(550, 50, SIZES['medium-circle']);
-  circleA.sampler = samplers[2];
+  // Walls and a ground
   var ground = Bodies.rectangle(400, 605, 810, 10, { isStatic: true });
-  var wallLeft = Bodies.rectangle(0, 300, 1, 600, { isStatic: true });
-  var wallRight = Bodies.rectangle(800, 300, 1, 600, { isStatic: true });
+  var wallLeft = Bodies.rectangle(0, 300, 1, SIZES['world-height'], { isStatic: true });
+  var wallRight = Bodies.rectangle(800, 300, 1, SIZES['world-height'], { isStatic: true });
 
 // create the playhead
-  var playhead = Bodies.rectangle(POSITIONING['ph-x-start'], POSITIONING['ph-y-start'], 1, SIZES['world-height'], { isStatic: true, collisionFilter: {mask: playheadCategory}});
+  var playhead = Bodies.rectangle(POSITIONING['ph-x-start'], POSITIONING['ph-y-start'], 1, SIZES['world-height'], { isStatic: true});
+// create playhead with masking filter
+  //var playhead = Bodies.rectangle(POSITIONING['ph-x-start'], POSITIONING['ph-y-start'], 1, SIZES['world-height'], { isStatic: true, collisionFilter: {mask: playheadCategory}});
 
 
 
@@ -100,13 +102,13 @@ function startBoxDemo() {
     for (var i = 0; i < pairs.length; i++) {
       var pair = pairs[i];
 
-      if(pair.bodyA.sampler) {
-        pair.bodyA.sampler.play();
+      if(pair.bodyB.sampler) {
+        pair.bodyB.sampler.play();
       }
 
       console.log('there was a collision',pair.bodyA, pair.bodyB);
       // change object colours to show those starting a collision
-      pair.bodyA.render.fillStyle = '#009900';
+      //pair.bodyA.render.fillStyle = '#009900';
       pair.bodyB.render.fillStyle = '#990000';
     }
   })
@@ -121,16 +123,35 @@ function startBoxDemo() {
 
 
   // add all of the bodies to the world
-  World.add(engine.world, [boxA, boxB, ground, wallLeft, wallRight, circleA, playhead]);
+  //World.add(engine.world, [boxA, boxB, circleA])
+  World.add(engine.world, [ground, wallLeft, wallRight, playhead]);
 
   // http://www.cambiaresearch.com/articles/15/javascript-key-codes
   document.onkeypress = function(keys) {
     console.log(keys.keyCode);
-    if (keys.keyCode === KEYS['n']) {
+
+    //sample creators
+    if (keys.keyCode === KEYS['1']) {
+      var newBox = Bodies.rectangle(60, 50, 80, 80);
+      newBox.sampler = samplers[0];
+      World.add(engine.world, [newBox]);
+    }
+    if (keys.keyCode === KEYS['2']) {
+      var newBox = Bodies.rectangle(60, 50, 80, 80);
+      newBox.sampler = samplers[1];
+      World.add(engine.world, [newBox]);
+    }
+    if (keys.keyCode === KEYS['3']) {
+      var newBox = Bodies.rectangle(60, 50, 80, 80);
+      newBox.sampler = samplers[2];
+      World.add(engine.world, [newBox]);
+    }
+    if (keys.keyCode === KEYS['4']) {
       var newBox = Bodies.rectangle(60, 50, 80, 80);
       newBox.sampler = samplers[3];
       World.add(engine.world, [newBox]);
     }
+
     if (keys.keyCode === KEYS['space']) {
       if(playing) {
         stopPlayhead()
