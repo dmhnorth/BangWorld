@@ -7,14 +7,23 @@
 <!--imports go in head, explicit script closes. loaded from init, in order, BE AWARE OF DEPENDENCY ORDER -->
 <script type="text/javascript" src="/node_modules/matter-js/build/matter.js"></script>
 <script type="text/javascript" src="node_modules/bumpkit/dist/bumpkit.js"></script>
-<script type="text/javascript" src="/src/matter-demo.js"></script>
+
 </head>
 
 <!--imports and then html body and then JS is the convention -->
 <body>
-  <button id="mute-button">Mute</button>
-  <div id="the-world-div"></div>
 
+  <div id="the-world-div"></div>
+  <button id="mute-button">Mute</button>
+  Note Length:
+  <select name="noteLength" id="length-choice">
+  <option>4th</option>
+  <option>8th</option>
+  <option selected>16th</option>
+  <option>32nd</option>
+</select>
+
+<script type="text/javascript" src="/src/matter-demo.js"></script>
 <!--this is where the js sits-->
 <script>
 // checks if DOM is loaded

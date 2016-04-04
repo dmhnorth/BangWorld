@@ -21,10 +21,15 @@ var POSITIONING = {
 }
 
 var SIZES = {
-  'medium-box' : 80,
+  '16th-box' : 50,
   'medium-circle' : 40,
   'sequencer-length' : 960,
   'world-height' : 600
+}
+
+var TIMING = {
+  'note-length' : 16,
+  'note-size' : 50
 }
 
 var SAMPLES = {
@@ -44,7 +49,6 @@ var playing = false;
 var counter = 0;
 
 var triggerBodyList = [];
-
 function resetTriggerBodies(triggerBodies) {
   for (var i = 0; i < triggerBodies.length; i++) {
     triggerBodies[i].collisionFilter.category = defaultCategory | liveCategory;
@@ -111,11 +115,6 @@ function startBoxDemo() {
         pair.bodyB.sampler.play();
         pair.bodyB.collisionFilter.category = defaultCategory | deadCategory;
       }
-
-      //console.log('there was a collisionStart',pair.bodyA, pair.bodyB);
-      // change object colours to show those starting a collision
-      //pair.bodyA.render.fillStyle = '#009900';
-      pair.bodyB.render.fillStyle = '#990000';
     }
   })
 
@@ -127,6 +126,13 @@ function startBoxDemo() {
       track.toggleMute();
     })
   })
+
+var select = document.getElementById('length-choice');
+select.addEventListener('change', function() {
+  console.log(parseInt(select.value));
+  TIMING['note-length'] = parseInt(select.value);
+})
+
 
 
   // add all of the bodies to the world
@@ -144,26 +150,28 @@ function startBoxDemo() {
       World.add(engine.world, newTriggerBody);
     }
 
-
+function getCurrentNoteSize() {
+  return POSITIONING['world-width']/TIMING['note-length'];
+}
 
     //Keyboard mappings
     if (keys.keyCode === KEYS['1']) {
-      var newBox = Bodies.rectangle(60, 50, 80, 80);
+      var newBox = Bodies.rectangle(60, 50, getCurrentNoteSize(), getCurrentNoteSize());
       newBox.sampler = samplers[0];
       addTriggerBody(newBox);
     }
     if (keys.keyCode === KEYS['2']) {
-      var newBox = Bodies.rectangle(60, 50, 80, 80);
+      var newBox = Bodies.rectangle(60, 50, getCurrentNoteSize(), getCurrentNoteSize());
       newBox.sampler = samplers[1];
       addTriggerBody(newBox);
     }
     if (keys.keyCode === KEYS['3']) {
-      var newBox = Bodies.rectangle(60, 50, 80, 80);
+      var newBox = Bodies.rectangle(60, 50, getCurrentNoteSize(), getCurrentNoteSize());
       newBox.sampler = samplers[2];
       addTriggerBody(newBox);
     }
     if (keys.keyCode === KEYS['4']) {
-      var newBox = Bodies.rectangle(60, 50, 80, 80);
+      var newBox = Bodies.rectangle(60, 50, getCurrentNoteSize(), getCurrentNoteSize());
       newBox.sampler = samplers[3];
       addTriggerBody(newBox);
     }
@@ -186,6 +194,7 @@ function startBoxDemo() {
     }
     if (keys.keyCode === KEYS['R']) {
       invertPlayheadSpeed();
+      resetTriggerBodies(triggerBodyList);
     }
   }
 
