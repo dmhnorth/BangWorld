@@ -130,26 +130,31 @@ function startBoxDemo() {
   document.onkeypress = function(keys) {
     console.log(keys.keyCode);
 
+function addTriggerBody(newTriggerBody) {
+  newTriggerBody.collisionFilter.category = defaultCategory | liveCategory;
+  World.add(engine.world, newTriggerBody);
+}
+
     //sample creators
     if (keys.keyCode === KEYS['1']) {
-      var newBox = Bodies.rectangle(60, 50, 80, 80, {collisionFilter: {category: defaultCategory | liveCategory}});
+      var newBox = Bodies.rectangle(60, 50, 80, 80);
       newBox.sampler = samplers[0];
-      World.add(engine.world, [newBox]);
+      addTriggerBody(newBox);
     }
     if (keys.keyCode === KEYS['2']) {
-      var newBox = Bodies.rectangle(60, 50, 80, 80, {collisionFilter: {category: defaultCategory | liveCategory}});
+      var newBox = Bodies.rectangle(60, 50, 80, 80);
       newBox.sampler = samplers[1];
-      World.add(engine.world, [newBox]);
+      addTriggerBody(newBox);
     }
     if (keys.keyCode === KEYS['3']) {
-      var newBox = Bodies.rectangle(60, 50, 80, 80, {collisionFilter: {category: defaultCategory | liveCategory}});
+      var newBox = Bodies.rectangle(60, 50, 80, 80);
       newBox.sampler = samplers[2];
-      World.add(engine.world, [newBox]);
+      addTriggerBody(newBox);
     }
     if (keys.keyCode === KEYS['4']) {
-      var newBox = Bodies.rectangle(60, 50, 80, 80, {collisionFilter: {category: defaultCategory | liveCategory}});
+      var newBox = Bodies.rectangle(60, 50, 80, 80);
       newBox.sampler = samplers[3];
-      World.add(engine.world, [newBox]);
+      addTriggerBody(newBox);
     }
 
     if (keys.keyCode === KEYS['space']) {
