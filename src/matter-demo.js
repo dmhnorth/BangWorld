@@ -16,6 +16,7 @@ var POSITIONING = {
   'ph-y-start' : 300,
   'world-width' : 800,
   'world-height' : 600,
+  'playhead-start-speed' : 5,
   'playhead-speed' : 5
 }
 
@@ -34,8 +35,8 @@ var SAMPLES = {
 }
 
 //collsion categories
-  var defaultCategory = 0x0001,
-      playheadCategory = 0x0002;
+  var liveCategory = 0x0001,
+      deadCategory = 0x0002;
 
 //Playhead variables
   var playing = false;
@@ -85,12 +86,12 @@ function startBoxDemo() {
   });
 
   // Walls and a ground
-  var ground = Bodies.rectangle(400, 605, 810, 10, { isStatic: true });
-  var wallLeft = Bodies.rectangle(0, 300, 1, SIZES['world-height'], { isStatic: true });
-  var wallRight = Bodies.rectangle(800, 300, 1, SIZES['world-height'], { isStatic: true });
+  var ground = Bodies.rectangle(400, 605, 810, 10, { isStatic: true, collisionFilter: {mask: liveCategory}});
+  var wallLeft = Bodies.rectangle(0, 300, 1, SIZES['world-height'], { isStatic: true, collisionFilter: {mask: liveCategory}});
+  var wallRight = Bodies.rectangle(800, 300, 1, SIZES['world-height'], { isStatic: true, collisionFilter: {mask: liveCategory}});
 
 // create the playhead
-  var playhead = Bodies.rectangle(POSITIONING['ph-x-start'], POSITIONING['ph-y-start'], 1, SIZES['world-height'], { isStatic: true});
+  var playhead = Bodies.rectangle(POSITIONING['ph-x-start'], POSITIONING['ph-y-start'], 1, SIZES['world-height'], { isStatic: true, collisionFilter: {mask: liveCategory}});
 // create playhead with masking filter
   //var playhead = Bodies.rectangle(POSITIONING['ph-x-start'], POSITIONING['ph-y-start'], 1, SIZES['world-height'], { isStatic: true, collisionFilter: {mask: playheadCategory}});
 
@@ -105,13 +106,20 @@ function startBoxDemo() {
       if(pair.bodyB.sampler) {
         pair.bodyB.sampler.play();
       }
+      if(pair.bodyA === playhead) {
+        pair.bodyB.collisionFilter = deadCategory;
+      }
 
-      console.log('there was a collision',pair.bodyA, pair.bodyB);
+
+
+
+      console.log('there was a collisionStart',pair.bodyA, pair.bodyB);
       // change object colours to show those starting a collision
       //pair.bodyA.render.fillStyle = '#009900';
       pair.bodyB.render.fillStyle = '#990000';
     }
   })
+
 
   //mute button
   var muteButton = document.getElementById('mute-button');
@@ -202,6 +210,8 @@ function startBoxDemo() {
     Body.setAngularVelocity(playhead, 0);
     playing = false;
     counter = 0;
+    POSITIONING['playhead-speed'] = POSITIONING['playhead-start-speed'];
+
   }
   function increasePlayheadSpeed() {
     POSITIONING['playhead-speed'] = POSITIONING['playhead-speed'] + 1;
