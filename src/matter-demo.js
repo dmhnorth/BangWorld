@@ -36,13 +36,20 @@ var SAMPLES = {
 
 //collsion categories
 var defaultCategory = 0x0001,
-    liveCategory = 0x0002,
-    deadCategory = 0x0004;
+liveCategory = 0x0002,
+deadCategory = 0x0004;
 
 //Playhead variables
 var playing = false;
 var counter = 0;
 
+var triggerBodyList = [];
+
+function resetTriggerBodies(triggerBodies) {
+  for (var i = 0; i < triggerBodies.length; i++) {
+    triggerBodies[i].collisionFilter.category = defaultCategory | liveCategory;
+  }
+}
 
 // lower case function names
 function startBoxDemo() {
@@ -130,12 +137,16 @@ function startBoxDemo() {
   document.onkeypress = function(keys) {
     console.log(keys.keyCode);
 
-function addTriggerBody(newTriggerBody) {
-  newTriggerBody.collisionFilter.category = defaultCategory | liveCategory;
-  World.add(engine.world, newTriggerBody);
-}
 
-    //sample creators
+    function addTriggerBody(newTriggerBody) {
+      newTriggerBody.collisionFilter.category = defaultCategory | liveCategory;
+      triggerBodyList.push(newTriggerBody);
+      World.add(engine.world, newTriggerBody);
+    }
+
+
+
+    //Keyboard mappings
     if (keys.keyCode === KEYS['1']) {
       var newBox = Bodies.rectangle(60, 50, 80, 80);
       newBox.sampler = samplers[0];
@@ -174,7 +185,7 @@ function addTriggerBody(newTriggerBody) {
       increasePlayheadSpeed()
     }
     if (keys.keyCode === KEYS['R']) {
-      invertPlayheadSpeed()
+      invertPlayheadSpeed();
     }
   }
 
@@ -184,9 +195,11 @@ function addTriggerBody(newTriggerBody) {
     if(playing){
       if(counter >= POSITIONING['world-width']){
         counter = 0;
+        resetTriggerBodies(triggerBodyList);
       }
       if(counter < 0){
         counter = POSITIONING['world-width'];
+        resetTriggerBodies(triggerBodyList);
       }
       counter += POSITIONING['playhead-speed'];
       Body.setPosition(playhead, { x: counter, y:POSITIONING['ph-y-start'] });
@@ -197,9 +210,11 @@ function addTriggerBody(newTriggerBody) {
   function startPlayhead() {
     playing = true;
   }
+
   function stopPlayhead() {
     playing = false;
   }
+
   function resetPlayhead() {
     Body.setPosition(playhead, { x:  POSITIONING['ph-x-start'], y:POSITIONING['ph-y-start'] });
     Body.setAngle(playhead, 0);
@@ -208,14 +223,17 @@ function addTriggerBody(newTriggerBody) {
     playing = false;
     counter = 0;
     POSITIONING['playhead-speed'] = POSITIONING['playhead-start-speed'];
-
+    resetTriggerBodies(triggerBodyList);
   }
+
   function increasePlayheadSpeed() {
     POSITIONING['playhead-speed'] = POSITIONING['playhead-speed'] + 1;
   }
+
   function decreasePlayheadSpeed() {
     POSITIONING['playhead-speed'] = POSITIONING['playhead-speed'] - 1;
   }
+
   function invertPlayheadSpeed() {
     POSITIONING['playhead-speed'] = POSITIONING['playhead-speed'] - POSITIONING['playhead-speed'] * 2;
   }
