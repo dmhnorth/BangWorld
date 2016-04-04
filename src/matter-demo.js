@@ -35,12 +35,13 @@ var SAMPLES = {
 }
 
 //collsion categories
-  var liveCategory = 0x0001,
-      deadCategory = 0x0002;
+var defaultCategory = 0x0001,
+    liveCategory = 0x0002,
+    deadCategory = 0x0004;
 
 //Playhead variables
-  var playing = false;
-  var counter = 0;
+var playing = false;
+var counter = 0;
 
 
 // lower case function names
@@ -86,16 +87,12 @@ function startBoxDemo() {
   });
 
   // Walls and a ground
-  var ground = Bodies.rectangle(400, 605, 810, 10, { isStatic: true, collisionFilter: {mask: liveCategory}});
-  var wallLeft = Bodies.rectangle(0, 300, 1, SIZES['world-height'], { isStatic: true, collisionFilter: {mask: liveCategory}});
-  var wallRight = Bodies.rectangle(800, 300, 1, SIZES['world-height'], { isStatic: true, collisionFilter: {mask: liveCategory}});
+  var ground = Bodies.rectangle(400, 605, 810, 10, { isStatic: true, collisionFilter: {category: defaultCategory | liveCategory | deadCategory}});
+  var wallLeft = Bodies.rectangle(0, 300, 1, SIZES['world-height'], { isStatic: true, collisionFilter: {category: defaultCategory | liveCategory | deadCategory}});
+  var wallRight = Bodies.rectangle(800, 300, 1, SIZES['world-height'], { isStatic: true, collisionFilter: {category: defaultCategory | liveCategory | deadCategory}});
 
-// create the playhead
+  // create the playhead
   var playhead = Bodies.rectangle(POSITIONING['ph-x-start'], POSITIONING['ph-y-start'], 1, SIZES['world-height'], { isStatic: true, collisionFilter: {mask: liveCategory}});
-// create playhead with masking filter
-  //var playhead = Bodies.rectangle(POSITIONING['ph-x-start'], POSITIONING['ph-y-start'], 1, SIZES['world-height'], { isStatic: true, collisionFilter: {mask: playheadCategory}});
-
-
 
   // an example of using collisionStart event on an engine, a custom Matter-js listener, with its own implementation of 'on' and 'trigger' from Matter's library
   Events.on(engine, 'collisionStart', function(event) {
@@ -103,17 +100,12 @@ function startBoxDemo() {
     for (var i = 0; i < pairs.length; i++) {
       var pair = pairs[i];
 
-      if(pair.bodyB.sampler) {
-        pair.bodyB.sampler.play();
-      }
       if(pair.bodyA === playhead) {
-        pair.bodyB.collisionFilter = deadCategory;
+        pair.bodyB.sampler.play();
+        pair.bodyB.collisionFilter.category = defaultCategory | deadCategory;
       }
 
-
-
-
-      console.log('there was a collisionStart',pair.bodyA, pair.bodyB);
+      //console.log('there was a collisionStart',pair.bodyA, pair.bodyB);
       // change object colours to show those starting a collision
       //pair.bodyA.render.fillStyle = '#009900';
       pair.bodyB.render.fillStyle = '#990000';
@@ -140,22 +132,22 @@ function startBoxDemo() {
 
     //sample creators
     if (keys.keyCode === KEYS['1']) {
-      var newBox = Bodies.rectangle(60, 50, 80, 80);
+      var newBox = Bodies.rectangle(60, 50, 80, 80, {collisionFilter: {category: defaultCategory | liveCategory}});
       newBox.sampler = samplers[0];
       World.add(engine.world, [newBox]);
     }
     if (keys.keyCode === KEYS['2']) {
-      var newBox = Bodies.rectangle(60, 50, 80, 80);
+      var newBox = Bodies.rectangle(60, 50, 80, 80, {collisionFilter: {category: defaultCategory | liveCategory}});
       newBox.sampler = samplers[1];
       World.add(engine.world, [newBox]);
     }
     if (keys.keyCode === KEYS['3']) {
-      var newBox = Bodies.rectangle(60, 50, 80, 80);
+      var newBox = Bodies.rectangle(60, 50, 80, 80, {collisionFilter: {category: defaultCategory | liveCategory}});
       newBox.sampler = samplers[2];
       World.add(engine.world, [newBox]);
     }
     if (keys.keyCode === KEYS['4']) {
-      var newBox = Bodies.rectangle(60, 50, 80, 80);
+      var newBox = Bodies.rectangle(60, 50, 80, 80, {collisionFilter: {category: defaultCategory | liveCategory}});
       newBox.sampler = samplers[3];
       World.add(engine.world, [newBox]);
     }
@@ -196,7 +188,7 @@ function startBoxDemo() {
     }
   })
 
-//playhead controls
+  //playhead controls
   function startPlayhead() {
     playing = true;
   }
