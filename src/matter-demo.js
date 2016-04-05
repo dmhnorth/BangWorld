@@ -24,12 +24,13 @@ var POSITIONING = {
 }
 var spawnPoint = 400;
 
-// http://brand-library.thomsonreuters.com/brand/article/item7174/
-var tr1 = '#4D4D4D',
-tr2 = '#FF5900',
-tr3 = '#FF8000',
-tr4 = '#FFA100',
-tr5 = '#FFFFFF';
+var COLOUR = {
+  0 : '#4D4D4D',
+  1 : '#FF5900',
+  2 : '#FF8000',
+  3 : '#FFA100',
+  4 : '#FFFFFF'
+}
 
 
 
@@ -58,7 +59,7 @@ var counter = 0;
 var grid = [];
 var triggerBodyList = [];
 var currentSample = 0;
-var currentColour = tr1;
+var currentColour = COLOUR[0];
 var keepStatic = true;
 //------------------------//
 
@@ -182,6 +183,13 @@ function start() {
     TIMING['note-length'] = parseInt(select.value);
   })
 
+  //sample selector
+  var select = document.getElementById('sample-choice');
+  select.addEventListener('change', function() {
+    console.log('Sample was changed', select.selectedIndex);
+    currentSample = select.selectedIndex;
+    currentColour = COLOUR[parseInt(select.selectedIndex)];
+  })
 
   var clearButton = document.getElementById('clear-world');
   clearButton.addEventListener('click', clearWorld);
@@ -213,28 +221,28 @@ function start() {
 
     if (keys.keyCode === KEYS['t']) {
       console.log('Testing functionality');
-      generateTrigger(0,0, tr1);
+      generateTrigger(0,0, COLOUR[0]);
     }
     //Keyboard mappings
     if (keys.keyCode === KEYS['1']) {
       currentSample = 0;
-      currentColour = tr1;
-      generateTrigger(spawnPoint, currentSample, tr1);
+      currentColour = COLOUR[0];
+      generateTrigger(spawnPoint, currentSample, currentColour);
     }
     if (keys.keyCode === KEYS['2']) {
       currentSample = 1;
-      currentColour = tr2;
-      generateTrigger(spawnPoint, currentSample, tr2);
+      currentColour = COLOUR[1];
+      generateTrigger(spawnPoint, currentSample, currentColour);
     }
     if (keys.keyCode === KEYS['3']) {
       currentSample = 2;
-      currentColour = tr3;
-      generateTrigger(spawnPoint, currentSample, tr3);
+      currentColour = COLOUR[2];
+      generateTrigger(spawnPoint, currentSample, currentColour);
     }
     if (keys.keyCode === KEYS['4']) {
       currentSample = 3;
-      currentColour = tr4;
-      generateTrigger(spawnPoint, currentSample, tr4);
+      currentColour = COLOUR[3];
+      generateTrigger(spawnPoint, currentSample, currentColour);
     }
     if (keys.keyCode === KEYS['space']) {
       playPause(playing);
