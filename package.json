@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "bumpkit": "0.0.2",
-    "matter-js": "^0.9.1"
+    "matter-js": "^0.9.1",
+    "react": "^0.14.8"
   }
 }

@@ -124,7 +124,6 @@ function start() {
   // create a Matter.js engine
   engine = Engine.create(document.getElementById('the-world-div'));
 
-
   // Walls and a ground
   var ground = Bodies.rectangle(400, 605, 810, 10, { isStatic: true, collisionFilter: {category: defaultCategory | liveCategory | deadCategory}});
   var wallLeft = Bodies.rectangle(0, 300, 1, POSITIONING['world-height'], { isStatic: true, collisionFilter: {category: defaultCategory | liveCategory | deadCategory}});
