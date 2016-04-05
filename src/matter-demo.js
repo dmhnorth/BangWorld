@@ -44,14 +44,26 @@ var SAMPLES = {
   'oh':'/samples/808-HatOp.wav'
 }
 
+//collision categories
+var defaultCategory = 0x0001,
+liveCategory = 0x0002,
+deadCategory = 0x0004;
+
+//Playhead variables
+var playing = false;
+var counter = 0;
+//------------------------//
+
+
+
 var grid = [];
 function generateGrid(gridSize) {
   grid = [];
   for (var i = 0; i <= gridSize-1; i++) {
     grid.push(i* (800/gridSize));
   }
-  return grid;
   console.log('New Grid is', grid);
+  return grid;
 }
 
 function placeNotes(newTriggerBodies) {
@@ -61,14 +73,7 @@ function placeNotes(newTriggerBodies) {
   }
 }
 
-//collision categories
-var defaultCategory = 0x0001,
-liveCategory = 0x0002,
-deadCategory = 0x0004;
 
-//Playhead variables
-var playing = false;
-var counter = 0;
 
 var triggerBodyList = [];
 function resetTriggerBodies(triggerBodies) {
@@ -77,17 +82,19 @@ function resetTriggerBodies(triggerBodies) {
   }
 }
 
-// lower case function names
-function startBoxDemo() {
+// Matter.js module aliases, aka window.Matter.Engine window is the global namespace
+var Engine = Matter.Engine,
+World = Matter.World,
+Bodies = Matter.Bodies,
+Events = Matter.Events,
+Body = Matter.Body,
+Composite = Matter.Composite,
+MouseConstraint = Matter.MouseConstraint;
 
-  // Matter.js module aliases, aka window.Matter.Engine window is the global namespace
-  var Engine = Matter.Engine,
-  World = Matter.World,
-  Bodies = Matter.Bodies,
-  Events = Matter.Events,
-  Body = Matter.Body,
-  Composite = Matter.Composite,
-  MouseConstraint = Matter.MouseConstraint;
+// lower case function names
+function start() {
+
+
 
   // create a Matter.js engine
   var engine = Engine.create(document.getElementById('the-world-div'));
@@ -221,6 +228,7 @@ function startBoxDemo() {
   //trigger management
   function clearWorld() {
     Composite.clear(engine.world, keepStatic, [deep=false]);
+    World.add(engine.world, MouseConstraint.create(engine));
   }
 
   //playhead timer
@@ -283,4 +291,4 @@ function startBoxDemo() {
   World.add(engine.world, MouseConstraint.create(engine));
 }
 
-MatterDemo = {start:startBoxDemo}
+MatterDemo = {start:start}
