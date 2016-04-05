@@ -35,7 +35,7 @@ var COLOUR = {
 
 
 var TIMING = {
-  'note-length' : 16,
+  'note-length' : 4,
   'note-size' : 50
 }
 
@@ -57,7 +57,7 @@ var counter = 0;
 
 //other bits
 var grid = [];
-var gridAmountToAdd = 8;
+var gridAmountToAdd = 2;
 var triggerBodyList = [];
 var currentSample = 0;
 var currentColour = COLOUR[0];
@@ -98,7 +98,7 @@ function generateTrigger(xLocation, sampler, colour) {
 }
 
 function updateSampleNameBox(sampler) {
-  document.getElementById("sample-name").value = sampler;
+  document.getElementById("sample-name").value = 'Sample:' + sampler + ' length:' + TIMING['note-length'];
 }
 
 function addTriggerBody(newTriggerBody) {
@@ -187,6 +187,7 @@ function start() {
   lengthChoice.addEventListener('change', function() {
     console.log('Timing was changed', parseInt(lengthChoice.value));
     TIMING['note-length'] = parseInt(lengthChoice.value);
+    updateSampleNameBox(currentSample);
   })
 
   //sample selector
@@ -195,6 +196,7 @@ function start() {
     console.log('Sample was changed', sampleChoice.selectedIndex);
     currentSample = sampleChoice.selectedIndex;
     currentColour = COLOUR[parseInt(sampleChoice.selectedIndex)];
+    updateSampleNameBox(currentSample);
   })
 
   var gridAmount = document.getElementById('grid-amount');
@@ -210,6 +212,9 @@ function start() {
 
   var invertButton = document.getElementById('invert-playhead-speed');
   invertButton.addEventListener('click', invertPlayheadSpeed);
+
+  var resetButton = document.getElementById('reset-playhead');
+  resetButton.addEventListener('click', resetPlayhead);
 
   var playPauseButton = document.getElementById('play-pause');
   playPauseButton.addEventListener('click', function() {
@@ -232,28 +237,29 @@ function start() {
 
     if (keys.keyCode === KEYS['t']) {
       console.log('Testing functionality');
-      generateTrigger(0,0, COLOUR[0]);
+      generateTrigger(spawnPoint, currentSample, currentColour);
     }
     //Keyboard mappings
     if (keys.keyCode === KEYS['1']) {
       currentSample = 0;
       currentColour = COLOUR[0];
-      // generateTrigger(spawnPoint, currentSample, currentColour);
+      updateSampleNameBox(currentSample);
     }
     if (keys.keyCode === KEYS['2']) {
       currentSample = 1;
       currentColour = COLOUR[1];
-      // generateTrigger(spawnPoint, currentSample, currentColour);
+      updateSampleNameBox(currentSample);
     }
     if (keys.keyCode === KEYS['3']) {
       currentSample = 2;
       currentColour = COLOUR[2];
-      // generateTrigger(spawnPoint, currentSample, currentColour);
+      updateSampleNameBox(currentSample);
     }
     if (keys.keyCode === KEYS['4']) {
       currentSample = 3;
       currentColour = COLOUR[3];
-      // generateTrigger(spawnPoint, currentSample, currentColour);
+      updateSampleNameBox(currentSample);
+
     }
     if (keys.keyCode === KEYS['space']) {
       playPause(playing);

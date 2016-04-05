@@ -21,50 +21,58 @@
 <body>
 
   <div id="the-world-div"></div>
-
-  <button id="mute-button" class="btn btn-default btn-lg">Mute</button>
-  <button id="clear-world" class="btn btn-default btn-lg">Clear</button>
-  <div class="btn-group">
-    <button id="decrease-playhead-speed" class="btn btn-default btn-lg">
-      <span class="glyphicon glyphicon-backward" aria-hidden="true"></span>
-    </button>
-    <button id="invert-playhead-speed" class="btn btn-default btn-lg">
-      Invert
-    </button>
-    <button id="play-pause" class="btn btn-default btn-lg">
-      <span class="glyphicon glyphicon-pause" aria-hidden="true"></span>
-      <span class="glyphicon glyphicon-play" aria-hidden="true"></span>
-    </button>
-    <button id="increase-playhead-speed" class="btn btn-default btn-lg">
-      <span class="glyphicon glyphicon-forward" aria-hidden="true"></span>
-    </button>
+  <p>
+    <div class="btn-group">
+      <button id="mute-button" class="btn btn-default btn-lg">Mute</button>
+      <button id="clear-world" class="btn btn-default btn-lg">Clear</button>
+    </div>
+    <div class="btn-group">
+      <button id="decrease-playhead-speed" class="btn btn-default btn-lg">
+        <span class="glyphicon glyphicon-backward" aria-hidden="true"></span>
+      </button>
+      <button id="invert-playhead-speed" class="btn btn-default btn-lg">
+        Invert
+      </button>
+      <button id="reset-playhead" class="btn btn-default btn-lg">
+        <span class="glyphicon glyphicon-stop" aria-hidden="true"></span>
+        Reset
+      </button>
+      <button id="play-pause" class="btn btn-default btn-lg">
+        <span class="glyphicon glyphicon-pause" aria-hidden="true"></span>
+        <span class="glyphicon glyphicon-play" aria-hidden="true"></span>
+      </button>
+      <button id="increase-playhead-speed" class="btn btn-default btn-lg">
+        <span class="glyphicon glyphicon-forward" aria-hidden="true"></span>
+      </button>
+    </p>
   </div>
 
-  <input type="text" id="sample-name" value=""></input>
+  <p>
+    <input type="text" id="sample-name" value=""></input>
 
 
-  Note Length:
-  <select name="noteLength" id="length-choice">
-    <option>4th</option>
-    <option>8th</option>
-    <option selected=true>16th</option>
-    <option>32nd</option>
-  </select>
+    Note Length:
+    <select name="noteLength" id="length-choice">
+      <option>4th</option>
+      <option>8th</option>
+      <option>16th</option>
+      <option>32nd</option>
+    </select>
 
-  Grid Sample:
-  <select name="sampleChoice" id="sample-choice">
-    <option>kick</option>
-    <option>snare</option>
-    <option>ch</option>
-    <option>oh</option>
-  </select>
+    Sample (keys 1-4):
+    <select name="sampleChoice" id="sample-choice">
+      <option>kick</option>
+      <option>snare</option>
+      <option>ch</option>
+      <option>oh</option>
+    </select>
 
 
-  <button id="drop-grid" class="btn btn-default btn-lg">
-    Drop Grid
-  </button>
-<input type="text" id="grid-amount" value="8"></input>
-
+    <button id="drop-grid" class="btn btn-default btn-lg">
+      Drop Grid Triggers:
+    </button>
+    <input type="text" id="grid-amount" value="2"></input>
+  </p>
 
 
   <!--this is where the js sits-->
