@@ -8,7 +8,8 @@ var KEYS = {
   '1' : 49,
   '2' : 50,
   '3' : 51,
-  '4' : 52
+  '4' : 52,
+  'c' : 99
 }
 
 var POSITIONING = {
@@ -64,6 +65,7 @@ function startBoxDemo() {
   Bodies = Matter.Bodies,
   Events = Matter.Events,
   Body = Matter.Body,
+  Composite = Matter.Composite,
   MouseConstraint = Matter.MouseConstraint;
 
   // create a Matter.js engine
@@ -101,7 +103,6 @@ function startBoxDemo() {
   var ground = Bodies.rectangle(400, 605, 810, 10, { isStatic: true, collisionFilter: {category: defaultCategory | liveCategory | deadCategory}});
   var wallLeft = Bodies.rectangle(0, 300, 1, SIZES['world-height'], { isStatic: true, collisionFilter: {category: defaultCategory | liveCategory | deadCategory}});
   var wallRight = Bodies.rectangle(800, 300, 1, SIZES['world-height'], { isStatic: true, collisionFilter: {category: defaultCategory | liveCategory | deadCategory}});
-
   // create the playhead
   var playhead = Bodies.rectangle(POSITIONING['ph-x-start'], POSITIONING['ph-y-start'], 1, SIZES['world-height'], { isStatic: true, collisionFilter: {mask: liveCategory}});
 
@@ -127,11 +128,11 @@ function startBoxDemo() {
     })
   })
 
-var select = document.getElementById('length-choice');
-select.addEventListener('change', function() {
-  console.log(parseInt(select.value));
-  TIMING['note-length'] = parseInt(select.value);
-})
+  var select = document.getElementById('length-choice');
+  select.addEventListener('change', function() {
+    console.log(parseInt(select.value));
+    TIMING['note-length'] = parseInt(select.value);
+  })
 
 
 
@@ -139,21 +140,20 @@ select.addEventListener('change', function() {
   //World.add(engine.world, [boxA, boxB, circleA])
   World.add(engine.world, [ground, wallLeft, wallRight, playhead]);
 
+
+  function addTriggerBody(newTriggerBody) {
+    newTriggerBody.collisionFilter.category = defaultCategory | liveCategory;
+    triggerBodyList.push(newTriggerBody);
+    World.add(engine.world, newTriggerBody);
+  }
+
+  function getCurrentNoteSize() {
+    return POSITIONING['world-width']/TIMING['note-length'];
+  }
+
   // http://www.cambiaresearch.com/articles/15/javascript-key-codes
   document.onkeypress = function(keys) {
     console.log(keys.keyCode);
-
-
-    function addTriggerBody(newTriggerBody) {
-      newTriggerBody.collisionFilter.category = defaultCategory | liveCategory;
-      triggerBodyList.push(newTriggerBody);
-      World.add(engine.world, newTriggerBody);
-    }
-
-function getCurrentNoteSize() {
-  return POSITIONING['world-width']/TIMING['note-length'];
-}
-
     //Keyboard mappings
     if (keys.keyCode === KEYS['1']) {
       var newBox = Bodies.rectangle(60, 50, getCurrentNoteSize(), getCurrentNoteSize());
@@ -175,7 +175,6 @@ function getCurrentNoteSize() {
       newBox.sampler = samplers[3];
       addTriggerBody(newBox);
     }
-
     if (keys.keyCode === KEYS['space']) {
       if(playing) {
         stopPlayhead()
@@ -196,8 +195,16 @@ function getCurrentNoteSize() {
       invertPlayheadSpeed();
       resetTriggerBodies(triggerBodyList);
     }
+    if (keys.keyCode === KEYS['c']) {
+      clearWorld();
+    }
   }
 
+  var keepStatic = true;
+  //trigger management
+  function clearWorld() {
+    Composite.clear(engine.world, keepStatic, [deep=false]);
+  }
 
   //playhead timer
   Events.on(engine, 'beforeUpdate', function(event) {
