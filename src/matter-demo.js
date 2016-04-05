@@ -21,9 +21,16 @@ var POSITIONING = {
   'playhead-speed' : 5
 }
 
+// http://brand-library.thomsonreuters.com/brand/article/item7174/
+var tr1 = '#4D4D4D',
+    tr2 = '#FF5900',
+    tr3 = '#FF8000',
+    tr4 = '#FFA100',
+    tr5 = '#FFFFFF';
+
+
+
 var SIZES = {
-  '16th-box' : 50,
-  'medium-circle' : 40,
   'sequencer-length' : 960,
   'world-height' : 600
 }
@@ -136,9 +143,6 @@ function startBoxDemo() {
 
 
 
-  // add all of the bodies to the world
-  //World.add(engine.world, [boxA, boxB, circleA])
-  World.add(engine.world, [ground, wallLeft, wallRight, playhead]);
 
 
   function addTriggerBody(newTriggerBody) {
@@ -156,22 +160,22 @@ function startBoxDemo() {
     console.log(keys.keyCode);
     //Keyboard mappings
     if (keys.keyCode === KEYS['1']) {
-      var newBox = Bodies.rectangle(60, 50, getCurrentNoteSize(), getCurrentNoteSize());
+      var newBox = Bodies.rectangle(60, 50, getCurrentNoteSize(), getCurrentNoteSize(), {render : {strokeStyle: tr1, fillStyle: tr1}});
       newBox.sampler = samplers[0];
       addTriggerBody(newBox);
     }
     if (keys.keyCode === KEYS['2']) {
-      var newBox = Bodies.rectangle(60, 50, getCurrentNoteSize(), getCurrentNoteSize());
+      var newBox = Bodies.rectangle(60, 50, getCurrentNoteSize(), getCurrentNoteSize(), {render : {strokeStyle: tr2, fillStyle: tr2}});
       newBox.sampler = samplers[1];
       addTriggerBody(newBox);
     }
     if (keys.keyCode === KEYS['3']) {
-      var newBox = Bodies.rectangle(60, 50, getCurrentNoteSize(), getCurrentNoteSize());
+      var newBox = Bodies.rectangle(60, 50, getCurrentNoteSize(), getCurrentNoteSize(), {render : {strokeStyle: tr3, fillStyle: tr3}});
       newBox.sampler = samplers[2];
       addTriggerBody(newBox);
     }
     if (keys.keyCode === KEYS['4']) {
-      var newBox = Bodies.rectangle(60, 50, getCurrentNoteSize(), getCurrentNoteSize());
+      var newBox = Bodies.rectangle(60, 50, getCurrentNoteSize(), getCurrentNoteSize(), {render : {strokeStyle: tr4, fillStyle: tr4}});
       newBox.sampler = samplers[3];
       addTriggerBody(newBox);
     }
@@ -255,6 +259,9 @@ function startBoxDemo() {
   }
 
 
+  // add all of the bodies to the world
+  //World.add(engine.world, [boxA, boxB, circleA])
+  World.add(engine.world, [ground, wallLeft, wallRight, playhead]);
 
   // set environment variables and run the engine
   var renderOptions = engine.render.options;
