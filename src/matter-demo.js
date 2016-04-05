@@ -184,22 +184,24 @@ function start() {
     TIMING['note-length'] = parseInt(select.value);
   })
 
-//is not declaring a variable good or bad?
-  document.getElementById('clear-world').addEventListener('click', function() {
-    clearWorld();
-  })
-  document.getElementById('decrease-playhead-speed').addEventListener('click', function() {
-    decreasePlayheadSpeed();
-  })
-  document.getElementById('invert-playhead-speed').addEventListener('click', function() {
-    invertPlayheadSpeed();
-  })
-  document.getElementById('play-pause').addEventListener('click', function() {
-    playPause();
-  })
-  document.getElementById('increase-playhead-speed').addEventListener('click', function() {
-    increasePlayheadSpeed();
-  })
+
+  var clearButton = document.getElementById('clear-world');
+  clearButton.addEventListener('click', clearWorld);
+
+  var slowerButton = document.getElementById('decrease-playhead-speed');
+  slowerButton.addEventListener('click', decreasePlayheadSpeed);
+
+  var invertButton = document.getElementById('invert-playhead-speed');
+  invertButton.addEventListener('click', invertPlayheadSpeed);
+
+  var playPauseButton = document.getElementById('play-pause');
+  playPauseButton.addEventListener('click', function() {
+    playPause(playing);
+  });
+
+
+  var fasterButton = document.getElementById('increase-playhead-speed');
+  fasterButton.addEventListener('click', increasePlayheadSpeed);
 
   // Keyboard Controls
   // http://www.cambiaresearch.com/articles/15/javascript-key-codes
@@ -284,7 +286,7 @@ function start() {
     playing = false;
   }
 
-function playPause() {
+function playPause(playing) {
   if(playing) {
     stopPlayhead()
   } else {
