@@ -59,14 +59,12 @@ var grid = [];
 var triggerBodyList = [];
 var currentSample = 0;
 var currentColour = tr1;
+var keepStatic = true;
 //------------------------//
 
 function getCurrentNoteSize() {
   return POSITIONING['world-width']/TIMING['note-length'];
 }
-
-
-
 
 function generateGrid(gridSize) {
   grid = [];
@@ -199,9 +197,14 @@ function start() {
     playPause(playing);
   });
 
-
   var fasterButton = document.getElementById('increase-playhead-speed');
   fasterButton.addEventListener('click', increasePlayheadSpeed);
+
+  var dropGrid = document.getElementById('drop-grid');
+  dropGrid.addEventListener('click', function() {
+    placeNotes(8);
+  });
+
 
   // Keyboard Controls
   // http://www.cambiaresearch.com/articles/15/javascript-key-codes
@@ -254,7 +257,6 @@ function start() {
     }
   }
 
-  var keepStatic = true;
   //trigger management
   function clearWorld() {
     Composite.clear(engine.world, keepStatic, [deep=false]);
@@ -281,19 +283,16 @@ function start() {
   function startPlayhead() {
     playing = true;
   }
-
   function stopPlayhead() {
     playing = false;
   }
-
-function playPause(playing) {
-  if(playing) {
-    stopPlayhead()
-  } else {
-    startPlayhead();
+  function playPause(playing) {
+    if(playing) {
+      stopPlayhead()
+    } else {
+      startPlayhead();
+    }
   }
-}
-
   function resetPlayhead() {
     Body.setPosition(playhead, { x:  POSITIONING['ph-x-start'], y:POSITIONING['ph-y-start'] });
     Body.setAngle(playhead, 0);
@@ -304,15 +303,12 @@ function playPause(playing) {
     POSITIONING['playhead-speed'] = POSITIONING['playhead-start-speed'];
     resetTriggerBodies(triggerBodyList);
   }
-
   function increasePlayheadSpeed() {
     POSITIONING['playhead-speed'] = POSITIONING['playhead-speed'] + 1;
   }
-
   function decreasePlayheadSpeed() {
     POSITIONING['playhead-speed'] = POSITIONING['playhead-speed'] - 1;
   }
-
   function invertPlayheadSpeed() {
     POSITIONING['playhead-speed'] = POSITIONING['playhead-speed'] - POSITIONING['playhead-speed'] * 2;
   }
