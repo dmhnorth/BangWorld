@@ -2,12 +2,12 @@
 
 <html>
 <head>
-<meta charset="UTF-8">
-<title>BangWorld</title>
-<!--imports go in head, explicit script closes. loaded from init, in order, BE AWARE OF DEPENDENCY ORDER -->
-<script type="text/javascript" src="/node_modules/matter-js/build/matter.js"></script>
-<script type="text/javascript" src="node_modules/bumpkit/dist/bumpkit.js"></script>
-<script type="text/javascript" src="/src/matter-demo.js"></script>
+  <meta charset="UTF-8">
+  <title>BangWorld</title>
+  <!--imports go in head, explicit script closes. loaded from init, in order, BE AWARE OF DEPENDENCY ORDER -->
+  <script type="text/javascript" src="/node_modules/matter-js/build/matter.js"></script>
+  <script type="text/javascript" src="node_modules/bumpkit/dist/bumpkit.js"></script>
+  <script type="text/javascript" src="/src/matter-demo.js"></script>
 </head>
 
 <!--imports and then html body and then JS is the convention -->
@@ -15,30 +15,35 @@
 
   <div id="the-world-div"></div>
   <button id="mute-button">Mute</button>
+  <button id="clear-world">Clear</button>
+  <button id="decrease-playhead-speed">Slower</button>
+  <button id="invert-playhead-speed">Invert</button>
+  <button id="play-pause">Play</button>
+  <button id="increase-playhead-speed">Faster</button>
   Note Length:
   <select name="noteLength" id="length-choice">
-  <option>4th</option>
-  <option>8th</option>
-  <option selected=true>16th</option>
-  <option>32nd</option>
-</select>
-
-<button id="clear-world">Clear</button>
+    <option>4th</option>
+    <option>8th</option>
+    <option selected=true>16th</option>
+    <option>32nd</option>
+  </select>
 
 
-<!--this is where the js sits-->
-<script>
-// checks if DOM is loaded
-function ready(fn) {
-  if (document.readyState != 'loading'){
-    fn();
-  } else {
-    document.addEventListener('DOMContentLoaded', fn);
+
+
+  <!--this is where the js sits-->
+  <script>
+  // checks if DOM is loaded
+  function ready(fn) {
+    if (document.readyState != 'loading'){
+      fn();
+    } else {
+      document.addEventListener('DOMContentLoaded', fn);
+    }
   }
-}
 
-ready(BangWorld.start);
-</script>
+  ready(BangWorld.start);
+  </script>
 
 </body>
 </html>

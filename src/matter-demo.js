@@ -184,10 +184,21 @@ function start() {
     TIMING['note-length'] = parseInt(select.value);
   })
 
-  //mute button
-  var muteButton = document.getElementById('clear-world');
-  muteButton.addEventListener('click', function() {
+//is not declaring a variable good or bad?
+  document.getElementById('clear-world').addEventListener('click', function() {
     clearWorld();
+  })
+  document.getElementById('decrease-playhead-speed').addEventListener('click', function() {
+    decreasePlayheadSpeed();
+  })
+  document.getElementById('invert-playhead-speed').addEventListener('click', function() {
+    invertPlayheadSpeed();
+  })
+  document.getElementById('play-pause').addEventListener('click', function() {
+    playPause();
+  })
+  document.getElementById('increase-playhead-speed').addEventListener('click', function() {
+    increasePlayheadSpeed();
   })
 
   // Keyboard Controls
@@ -221,11 +232,7 @@ function start() {
       generateTrigger(spawnPoint, currentSample, tr4);
     }
     if (keys.keyCode === KEYS['space']) {
-      if(playing) {
-        stopPlayhead()
-      } else {
-        startPlayhead();
-      }
+      playPause(playing);
     }
     if (keys.keyCode === KEYS['r']) {
       resetPlayhead();
@@ -276,6 +283,14 @@ function start() {
   function stopPlayhead() {
     playing = false;
   }
+
+function playPause() {
+  if(playing) {
+    stopPlayhead()
+  } else {
+    startPlayhead();
+  }
+}
 
   function resetPlayhead() {
     Body.setPosition(playhead, { x:  POSITIONING['ph-x-start'], y:POSITIONING['ph-y-start'] });
