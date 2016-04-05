@@ -9,12 +9,14 @@ var KEYS = {
   '2' : 50,
   '3' : 51,
   '4' : 52,
-  'c' : 99
+  'c' : 99,
+  't' : 116
 }
 
 var POSITIONING = {
   'ph-x-start' : 0,
   'ph-y-start' : 300,
+  //how to extract these automatically?
   'world-width' : 800,
   'world-height' : 600,
   'playhead-start-speed' : 5,
@@ -28,8 +30,9 @@ tr3 = '#FF8000',
 tr4 = '#FFA100',
 tr5 = '#FFFFFF';
 
+var spawnPoint = 400;
+
 var TIMING = {
-  'sequencer-length' : 960,
   'note-length' : 16,
   'note-size' : 50
 }
@@ -47,14 +50,18 @@ function generateGrid(gridSize) {
   for (var i = 0; i <= gridSize-1; i++) {
     grid.push(i* (800/gridSize));
   }
+  return grid;
   console.log('New Grid is', grid);
 }
 
+function placeNotes(newTriggerBodies) {
+  generateGrid(newTriggerBodies);
+  for (var i = 0; i < grid.length; i++) {
+    generateTrigger(grid[i], 3, tr1);
+  }
+}
 
-
-
-
-//collsion categories
+//collision categories
 var defaultCategory = 0x0001,
 liveCategory = 0x0002,
 deadCategory = 0x0004;
@@ -158,29 +165,32 @@ function startBoxDemo() {
     return POSITIONING['world-width']/TIMING['note-length'];
   }
 
+  function generateTrigger(xLocation, sampler, colour) {
+    var newBox = Bodies.rectangle(xLocation + getCurrentNoteSize()/2, 0, getCurrentNoteSize(), getCurrentNoteSize(), {render : {strokeStyle: colour, fillStyle: colour}});
+    newBox.sampler = samplers[sampler];
+    addTriggerBody(newBox);
+  }
+
   // http://www.cambiaresearch.com/articles/15/javascript-key-codes
   document.onkeypress = function(keys) {
     console.log(keys.keyCode);
+
+    if (keys.keyCode === KEYS['t']) {
+      console.log('Testing functionality');
+      generateTrigger(0,0, tr1);
+    }
     //Keyboard mappings
     if (keys.keyCode === KEYS['1']) {
-      var newBox = Bodies.rectangle(60, 50, getCurrentNoteSize(), getCurrentNoteSize(), {render : {strokeStyle: tr1, fillStyle: tr1}});
-      newBox.sampler = samplers[0];
-      addTriggerBody(newBox);
+      generateTrigger(spawnPoint,0, tr1);
     }
     if (keys.keyCode === KEYS['2']) {
-      var newBox = Bodies.rectangle(60, 50, getCurrentNoteSize(), getCurrentNoteSize(), {render : {strokeStyle: tr2, fillStyle: tr2}});
-      newBox.sampler = samplers[1];
-      addTriggerBody(newBox);
+      generateTrigger(spawnPoint,1, tr2);
     }
     if (keys.keyCode === KEYS['3']) {
-      var newBox = Bodies.rectangle(60, 50, getCurrentNoteSize(), getCurrentNoteSize(), {render : {strokeStyle: tr3, fillStyle: tr3}});
-      newBox.sampler = samplers[2];
-      addTriggerBody(newBox);
+      generateTrigger(spawnPoint,2, tr3);
     }
     if (keys.keyCode === KEYS['4']) {
-      var newBox = Bodies.rectangle(60, 50, getCurrentNoteSize(), getCurrentNoteSize(), {render : {strokeStyle: tr4, fillStyle: tr4}});
-      newBox.sampler = samplers[3];
-      addTriggerBody(newBox);
+      generateTrigger(spawnPoint,3, tr4);
     }
     if (keys.keyCode === KEYS['space']) {
       if(playing) {
