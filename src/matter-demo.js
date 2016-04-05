@@ -57,6 +57,7 @@ var counter = 0;
 
 //other bits
 var grid = [];
+var gridAmountToAdd = 8;
 var triggerBodyList = [];
 var currentSample = 0;
 var currentColour = COLOUR[0];
@@ -93,6 +94,11 @@ function generateTrigger(xLocation, sampler, colour) {
   var newBox = Bodies.rectangle(xLocation + getCurrentNoteSize()/2, 0, getCurrentNoteSize(), getCurrentNoteSize(), {render : {strokeStyle: colour, fillStyle: colour}});
   newBox.sampler = samplers[sampler];
   addTriggerBody(newBox);
+  updateSampleNameBox(sampler);
+}
+
+function updateSampleNameBox(sampler) {
+  document.getElementById("sample-name").value = sampler;
 }
 
 function addTriggerBody(newTriggerBody) {
@@ -177,18 +183,23 @@ function start() {
   })
 
   //note size selector
-  var select = document.getElementById('length-choice');
-  select.addEventListener('change', function() {
-    console.log('Timing was changed', parseInt(select.value));
-    TIMING['note-length'] = parseInt(select.value);
+  var lengthChoice = document.getElementById('length-choice');
+  lengthChoice.addEventListener('change', function() {
+    console.log('Timing was changed', parseInt(lengthChoice.value));
+    TIMING['note-length'] = parseInt(lengthChoice.value);
   })
 
   //sample selector
-  var select = document.getElementById('sample-choice');
-  select.addEventListener('change', function() {
-    console.log('Sample was changed', select.selectedIndex);
-    currentSample = select.selectedIndex;
-    currentColour = COLOUR[parseInt(select.selectedIndex)];
+  var sampleChoice = document.getElementById('sample-choice');
+  sampleChoice.addEventListener('change', function() {
+    console.log('Sample was changed', sampleChoice.selectedIndex);
+    currentSample = sampleChoice.selectedIndex;
+    currentColour = COLOUR[parseInt(sampleChoice.selectedIndex)];
+  })
+
+  var gridAmount = document.getElementById('grid-amount');
+  gridAmount.addEventListener('change', function() {
+    gridAmountToAdd = parseInt(document.getElementById("grid-amount").value);
   })
 
   var clearButton = document.getElementById('clear-world');
@@ -210,7 +221,7 @@ function start() {
 
   var dropGrid = document.getElementById('drop-grid');
   dropGrid.addEventListener('click', function() {
-    placeNotes(8);
+    placeNotes(gridAmountToAdd);
   });
 
 
@@ -227,22 +238,22 @@ function start() {
     if (keys.keyCode === KEYS['1']) {
       currentSample = 0;
       currentColour = COLOUR[0];
-      generateTrigger(spawnPoint, currentSample, currentColour);
+      // generateTrigger(spawnPoint, currentSample, currentColour);
     }
     if (keys.keyCode === KEYS['2']) {
       currentSample = 1;
       currentColour = COLOUR[1];
-      generateTrigger(spawnPoint, currentSample, currentColour);
+      // generateTrigger(spawnPoint, currentSample, currentColour);
     }
     if (keys.keyCode === KEYS['3']) {
       currentSample = 2;
       currentColour = COLOUR[2];
-      generateTrigger(spawnPoint, currentSample, currentColour);
+      // generateTrigger(spawnPoint, currentSample, currentColour);
     }
     if (keys.keyCode === KEYS['4']) {
       currentSample = 3;
       currentColour = COLOUR[3];
-      generateTrigger(spawnPoint, currentSample, currentColour);
+      // generateTrigger(spawnPoint, currentSample, currentColour);
     }
     if (keys.keyCode === KEYS['space']) {
       playPause(playing);
