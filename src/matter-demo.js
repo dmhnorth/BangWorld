@@ -22,6 +22,7 @@ var POSITIONING = {
   'playhead-start-speed' : 5,
   'playhead-speed' : 5
 }
+var spawnPoint = 400;
 
 // http://brand-library.thomsonreuters.com/brand/article/item7174/
 var tr1 = '#4D4D4D',
@@ -30,7 +31,7 @@ tr3 = '#FF8000',
 tr4 = '#FFA100',
 tr5 = '#FFFFFF';
 
-var spawnPoint = 400;
+
 
 var TIMING = {
   'note-length' : 16,
@@ -52,11 +53,21 @@ deadCategory = 0x0004;
 //Playhead variables
 var playing = false;
 var counter = 0;
+
+//other bits
+var grid = [];
+var triggerBodyList = [];
+var currentSample = 0;
+var currentColour = tr1;
 //------------------------//
 
+function getCurrentNoteSize() {
+  return POSITIONING['world-width']/TIMING['note-length'];
+}
 
 
-var grid = [];
+
+
 function generateGrid(gridSize) {
   grid = [];
   for (var i = 0; i <= gridSize-1; i++) {
@@ -69,18 +80,28 @@ function generateGrid(gridSize) {
 function placeNotes(newTriggerBodies) {
   generateGrid(newTriggerBodies);
   for (var i = 0; i < grid.length; i++) {
-    generateTrigger(grid[i], 3, tr1);
+    generateTrigger(grid[i], currentSample, currentColour);
   }
 }
 
-
-
-var triggerBodyList = [];
 function resetTriggerBodies(triggerBodies) {
   for (var i = 0; i < triggerBodies.length; i++) {
     triggerBodies[i].collisionFilter.category = defaultCategory | liveCategory;
   }
 }
+
+function generateTrigger(xLocation, sampler, colour) {
+  var newBox = Bodies.rectangle(xLocation + getCurrentNoteSize()/2, 0, getCurrentNoteSize(), getCurrentNoteSize(), {render : {strokeStyle: colour, fillStyle: colour}});
+  newBox.sampler = samplers[sampler];
+  addTriggerBody(newBox);
+}
+
+function addTriggerBody(newTriggerBody) {
+  newTriggerBody.collisionFilter.category = defaultCategory | liveCategory;
+  triggerBodyList.push(newTriggerBody);
+  World.add(engine.world, newTriggerBody);
+}
+
 
 // Matter.js module aliases, aka window.Matter.Engine window is the global namespace
 var Engine = Matter.Engine,
@@ -91,21 +112,32 @@ Body = Matter.Body,
 Composite = Matter.Composite,
 MouseConstraint = Matter.MouseConstraint;
 
+var engine,
+mixer,
+samplers,
+bumpkit;
+
+
 // lower case function names
 function start() {
 
-
-
   // create a Matter.js engine
-  var engine = Engine.create(document.getElementById('the-world-div'));
+  engine = Engine.create(document.getElementById('the-world-div'));
+
+
+  // Walls and a ground
+  var ground = Bodies.rectangle(400, 605, 810, 10, { isStatic: true, collisionFilter: {category: defaultCategory | liveCategory | deadCategory}});
+  var wallLeft = Bodies.rectangle(0, 300, 1, POSITIONING['world-height'], { isStatic: true, collisionFilter: {category: defaultCategory | liveCategory | deadCategory}});
+  var wallRight = Bodies.rectangle(800, 300, 1, POSITIONING['world-height'], { isStatic: true, collisionFilter: {category: defaultCategory | liveCategory | deadCategory}});
+  // create the playhead
+  var playhead = Bodies.rectangle(POSITIONING['ph-x-start'], POSITIONING['ph-y-start'], 1, POSITIONING['world-height'], { isStatic: true, collisionFilter: {mask: liveCategory}});
 
   // create a bumpkit
-  var bumpkit = new Bumpkit();
-
+  bumpkit = new Bumpkit();
   // create a bumpkit mixer with two tracks
-  var mixer = bumpkit.createMixer().addTrack().addTrack();
+  mixer = bumpkit.createMixer().addTrack().addTrack();
   //create some samplers, connect to track one and load an audio buffer
-  var samplers = [bumpkit.createSampler(), bumpkit.createSampler(), bumpkit.createSampler(), bumpkit.createSampler()];
+  samplers = [bumpkit.createSampler(), bumpkit.createSampler(), bumpkit.createSampler(), bumpkit.createSampler()];
   for (var i = 0; i < samplers.length; i++) {
     //this will probably need to be more intelligent
     samplers[i].connect(mixer.tracks[0]);
@@ -114,25 +146,15 @@ function start() {
   bumpkit.loadBuffer(SAMPLES['kick'], function(buffer) {
     samplers[0].buffer(buffer);
   });
-
   bumpkit.loadBuffer(SAMPLES['snare'], function(buffer) {
     samplers[1].buffer(buffer);
   });
-
   bumpkit.loadBuffer(SAMPLES['ch'], function(buffer) {
     samplers[2].buffer(buffer);
   });
-
   bumpkit.loadBuffer(SAMPLES['oh'], function(buffer) {
     samplers[3].buffer(buffer);
   });
-
-  // Walls and a ground
-  var ground = Bodies.rectangle(400, 605, 810, 10, { isStatic: true, collisionFilter: {category: defaultCategory | liveCategory | deadCategory}});
-  var wallLeft = Bodies.rectangle(0, 300, 1, POSITIONING['world-height'], { isStatic: true, collisionFilter: {category: defaultCategory | liveCategory | deadCategory}});
-  var wallRight = Bodies.rectangle(800, 300, 1, POSITIONING['world-height'], { isStatic: true, collisionFilter: {category: defaultCategory | liveCategory | deadCategory}});
-  // create the playhead
-  var playhead = Bodies.rectangle(POSITIONING['ph-x-start'], POSITIONING['ph-y-start'], 1, POSITIONING['world-height'], { isStatic: true, collisionFilter: {mask: liveCategory}});
 
   // an example of using collisionStart event on an engine, a custom Matter-js listener, with its own implementation of 'on' and 'trigger' from Matter's library
   Events.on(engine, 'collisionStart', function(event) {
@@ -156,28 +178,17 @@ function start() {
     })
   })
 
+  //note size selector
   var select = document.getElementById('length-choice');
   select.addEventListener('change', function() {
     console.log('Timing was changed', parseInt(select.value));
     TIMING['note-length'] = parseInt(select.value);
   })
 
-  function addTriggerBody(newTriggerBody) {
-    newTriggerBody.collisionFilter.category = defaultCategory | liveCategory;
-    triggerBodyList.push(newTriggerBody);
-    World.add(engine.world, newTriggerBody);
-  }
 
-  function getCurrentNoteSize() {
-    return POSITIONING['world-width']/TIMING['note-length'];
-  }
 
-  function generateTrigger(xLocation, sampler, colour) {
-    var newBox = Bodies.rectangle(xLocation + getCurrentNoteSize()/2, 0, getCurrentNoteSize(), getCurrentNoteSize(), {render : {strokeStyle: colour, fillStyle: colour}});
-    newBox.sampler = samplers[sampler];
-    addTriggerBody(newBox);
-  }
 
+  // Keyboard Controls
   // http://www.cambiaresearch.com/articles/15/javascript-key-codes
   document.onkeypress = function(keys) {
     console.log(keys.keyCode);
@@ -188,16 +199,24 @@ function start() {
     }
     //Keyboard mappings
     if (keys.keyCode === KEYS['1']) {
-      generateTrigger(spawnPoint,0, tr1);
+      currentSample = 0;
+      currentColour = tr1;
+      generateTrigger(spawnPoint, currentSample, tr1);
     }
     if (keys.keyCode === KEYS['2']) {
-      generateTrigger(spawnPoint,1, tr2);
+      currentSample = 1;
+      currentColour = tr2;
+      generateTrigger(spawnPoint, currentSample, tr2);
     }
     if (keys.keyCode === KEYS['3']) {
-      generateTrigger(spawnPoint,2, tr3);
+      currentSample = 2;
+      currentColour = tr3;
+      generateTrigger(spawnPoint, currentSample, tr3);
     }
     if (keys.keyCode === KEYS['4']) {
-      generateTrigger(spawnPoint,3, tr4);
+      currentSample = 3;
+      currentColour = tr4;
+      generateTrigger(spawnPoint, currentSample, tr4);
     }
     if (keys.keyCode === KEYS['space']) {
       if(playing) {
@@ -291,4 +310,4 @@ function start() {
   World.add(engine.world, MouseConstraint.create(engine));
 }
 
-MatterDemo = {start:start}
+BangWorld = {start:start}
