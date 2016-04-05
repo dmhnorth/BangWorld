@@ -184,8 +184,11 @@ function start() {
     TIMING['note-length'] = parseInt(select.value);
   })
 
-
-
+  //mute button
+  var muteButton = document.getElementById('clear-world');
+  muteButton.addEventListener('click', function() {
+    clearWorld();
+  })
 
   // Keyboard Controls
   // http://www.cambiaresearch.com/articles/15/javascript-key-codes
