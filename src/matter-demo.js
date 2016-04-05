@@ -23,19 +23,13 @@ var POSITIONING = {
 
 // http://brand-library.thomsonreuters.com/brand/article/item7174/
 var tr1 = '#4D4D4D',
-    tr2 = '#FF5900',
-    tr3 = '#FF8000',
-    tr4 = '#FFA100',
-    tr5 = '#FFFFFF';
-
-
-
-var SIZES = {
-  'sequencer-length' : 960,
-  'world-height' : 600
-}
+tr2 = '#FF5900',
+tr3 = '#FF8000',
+tr4 = '#FFA100',
+tr5 = '#FFFFFF';
 
 var TIMING = {
+  'sequencer-length' : 960,
   'note-length' : 16,
   'note-size' : 50
 }
@@ -46,6 +40,19 @@ var SAMPLES = {
   'ch':'/samples/808-HatC.wav',
   'oh':'/samples/808-HatOp.wav'
 }
+
+var grid = [];
+function generateGrid(gridSize) {
+  grid = [];
+  for (var i = 0; i <= gridSize-1; i++) {
+    grid.push(i* (800/gridSize));
+  }
+  console.log('New Grid is', grid);
+}
+
+
+
+
 
 //collsion categories
 var defaultCategory = 0x0001,
@@ -108,10 +115,10 @@ function startBoxDemo() {
 
   // Walls and a ground
   var ground = Bodies.rectangle(400, 605, 810, 10, { isStatic: true, collisionFilter: {category: defaultCategory | liveCategory | deadCategory}});
-  var wallLeft = Bodies.rectangle(0, 300, 1, SIZES['world-height'], { isStatic: true, collisionFilter: {category: defaultCategory | liveCategory | deadCategory}});
-  var wallRight = Bodies.rectangle(800, 300, 1, SIZES['world-height'], { isStatic: true, collisionFilter: {category: defaultCategory | liveCategory | deadCategory}});
+  var wallLeft = Bodies.rectangle(0, 300, 1, POSITIONING['world-height'], { isStatic: true, collisionFilter: {category: defaultCategory | liveCategory | deadCategory}});
+  var wallRight = Bodies.rectangle(800, 300, 1, POSITIONING['world-height'], { isStatic: true, collisionFilter: {category: defaultCategory | liveCategory | deadCategory}});
   // create the playhead
-  var playhead = Bodies.rectangle(POSITIONING['ph-x-start'], POSITIONING['ph-y-start'], 1, SIZES['world-height'], { isStatic: true, collisionFilter: {mask: liveCategory}});
+  var playhead = Bodies.rectangle(POSITIONING['ph-x-start'], POSITIONING['ph-y-start'], 1, POSITIONING['world-height'], { isStatic: true, collisionFilter: {mask: liveCategory}});
 
   // an example of using collisionStart event on an engine, a custom Matter-js listener, with its own implementation of 'on' and 'trigger' from Matter's library
   Events.on(engine, 'collisionStart', function(event) {
@@ -137,13 +144,9 @@ function startBoxDemo() {
 
   var select = document.getElementById('length-choice');
   select.addEventListener('change', function() {
-    console.log(parseInt(select.value));
+    console.log('Timing was changed', parseInt(select.value));
     TIMING['note-length'] = parseInt(select.value);
   })
-
-
-
-
 
   function addTriggerBody(newTriggerBody) {
     newTriggerBody.collisionFilter.category = defaultCategory | liveCategory;
