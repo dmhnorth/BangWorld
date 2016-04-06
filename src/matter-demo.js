@@ -57,7 +57,7 @@ var counter = 0;
 
 //other bits
 var grid = [];
-var gridAmountToAdd = 2;
+var gridAmountToAdd = 1;
 var triggerBodyList = [];
 var currentSample = 0;
 var currentColour = COLOUR[0];
